@@ -1,0 +1,96 @@
+{
+  "name": "design-desk",
+  "version": "1.0.1",
+  "description": "Design Project Management System",
+  "main": "src/main/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently \"npm run watch:css\" \"cross-env ELECTRON_RELOADER=false electron . --dev\"",
+    "watch:css": "tailwindcss -i ./public/styles/tailwind.css -o ./public/styles/output.css --watch",
+    "build:css": "tailwindcss -i ./public/styles/tailwind.css -o ./public/styles/output.css --minify",
+    "build:icon": "node -e \"require('png-to-ico')('build/icons/256x256.png').then(buf => require('fs').writeFileSync('build/icon.ico', buf))\"",
+    "build:win": "npm run build:css && electron-builder --win",
+    "debug:win": "electron . --enable-logging --log-level=debug",
+    "build": "npm run build:css && electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+    "appId": "com.mvp.app",
+    "productName": "MVP",
+    "asar": true,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "src/main",
+        "to": "app/src/main"
+      },
+      {
+        "from": "public",
+        "to": "public"
+      }
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["universal"]
+        }
+      ],
+      "category": "public.app-category.productivity",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "artifactName": "${productName}-Universal-${version}.${ext}",
+      "extendInfo": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
+      }
+    },
+    "win": {
+      "target": ["nsis"],
+      "icon": "build/icon.ico",
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "perMachine": false
+    },
+    "electronDownload": {
+      "cache": "./electron-cache"
+    },
+    "npmRebuild": false,
+    "buildDependenciesFromSource": true
+  },
+  "author": "Design Desk",
+  "license": "ISC",
+  "dependencies": {
+    "autoprefixer": "^10.4.20",
+    "dotenv": "^16.4.7",
+    "electron-store": "^8.1.0",
+    "googleapis": "^129.0.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^28.1.0",
+    "electron-builder": "^25.1.8",
+    "electron-reloader": "^1.2.3",
+    "png-to-ico": "^2.1.8"
+  }
+}

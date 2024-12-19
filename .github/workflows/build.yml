@@ -1,0 +1,79 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+# Add permissions needed for creating releases
+permissions:
+  contents: write
+  packages: write
+  actions: write
+
+jobs:
+  # Cleanup job to run first
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 1
+
+  # Main build job
+  build:
+    needs: cleanup
+    runs-on: macos-latest
+    
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Clean directories
+        run: |
+          rm -rf dist .webpack logs node_modules package-lock.json
+        shell: bash
+
+      - name: Install dependencies
+        run: |
+          # Update npm to latest version
+          npm install -g npm@latest
+          # Install dependencies
+          npm install --no-package-lock
+          npm run build:css
+        env:
+          CI: true
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      - name: Build macOS Universal
+        run: |
+          # Enable verbose logging for electron-builder
+          export DEBUG=electron-builder
+          
+          # Run the build with detailed logging
+          npm run build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG: electron-builder,electron-builder:*
+          NODE_OPTIONS: "--max-old-space-size=4096"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*Universal*.dmg
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

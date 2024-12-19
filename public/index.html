@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Desk App</title>
+    <link rel="stylesheet" href="styles/output.css">
+    <!-- Phosphor Icons - Open Source Animated Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+            20%, 40%, 60%, 80% { transform: translateX(4px); }
+        }
+        .shake {
+            animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.05; }
+            50% { transform: scale(1.02); opacity: 0.08; }
+        }
+        .animate-float {
+            animation: float 8s ease-in-out infinite;
+        }
+        .animate-rotate {
+            animation: rotate 20s linear infinite;
+        }
+        .animate-pulse-slow {
+            animation: pulse 6s ease-in-out infinite;
+        }
+        .glass-morphism {
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+        .animated-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 1;
+            opacity: 0.08;
+            mix-blend-mode: screen;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-accent text-light-primary min-h-screen overflow-hidden">
+    <!-- Background Image -->
+    <div class="fixed inset-0 z-0 pointer-events-none" style="background-image: url('../assets/image.avif'); background-position: bottom; background-repeat: no-repeat; background-size: contain; opacity: 0.8;"></div>
+    
+    <!-- Login Form -->
+    <div class="fixed inset-0 flex items-center justify-center p-4 backdrop-blur-sm" id="loginForm">
+        <!-- Animated Background Shapes -->
+        <div class="animated-shape w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] bg-accent-blue animate-float" 
+             style="top: 5%; left: 10%; animation-delay: 0s;"></div>
+        <div class="animated-shape w-[35vw] h-[35vw] max-w-[500px] max-h-[500px] bg-accent-purple animate-float" 
+             style="bottom: 10%; right: 10%; animation-delay: -4s;"></div>
+        <div class="animated-shape w-[30vw] h-[30vw] max-w-[400px] max-h-[400px] bg-accent-pink animate-rotate" 
+             style="top: 40%; left: 20%; animation-delay: -2s;"></div>
+        
+        <!-- Login Panel -->
+        <div class="glass-morphism w-full max-w-[90%] sm:max-w-md mx-auto relative transform transition-all duration-300 scale-95 hover:scale-100 my-auto rounded-2xl p-8 z-10">
+            <!-- Logo -->
+            <div class="text-center mb-8">
+                <i class="ph-fill ph-squares-four text-4xl sm:text-5xl mb-4 bg-gradient-to-r from-accent-blue via-accent-purple to-accent-pink text-transparent bg-clip-text animate-pulse"></i>
+                <h1 class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-accent-blue via-accent-purple to-accent-pink bg-clip-text text-transparent">
+                    Design Desk
+                </h1>
+                <p class="text-xs sm:text-sm mt-2 text-gray-400">Project Management System</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login" class="space-y-4 sm:space-y-6">
+                <div class="space-y-2">
+                    <label for="email" class="text-xs sm:text-sm text-gray-300 flex items-center gap-2">
+                        <i class="ph-fill ph-envelope text-accent-blue"></i>
+                        Email
+                    </label>
+                    <input type="email" id="email" placeholder="Enter your email" required
+                        class="glass-morphism w-full text-sm sm:text-base placeholder:text-xs sm:placeholder:text-sm placeholder-gray-500 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-opacity-50">
+                </div>
+                <div class="space-y-2">
+                    <label for="password" class="text-xs sm:text-sm text-gray-300 flex items-center gap-2">
+                        <i class="ph-fill ph-lock text-accent-purple"></i>
+                        Password
+                    </label>
+                    <input type="password" id="password" placeholder="Enter your password" required
+                        class="glass-morphism w-full text-sm sm:text-base placeholder:text-xs sm:placeholder:text-sm placeholder-gray-500 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-opacity-50">
+                </div>
+                <button type="submit" id="loginButton"
+                    class="glass-morphism w-full bg-accent-blue bg-opacity-10 hover:bg-opacity-20 group mt-6 relative px-4 py-2 rounded-lg">
+                    <span class="relative flex items-center justify-center text-sm sm:text-base">
+                        <span class="login-text">Login</span>
+                        <i class="ph-fill ph-arrow-right text-lg sm:text-xl ml-2 transition-transform duration-300 ease-out transform group-hover:translate-x-1 login-icon"></i>
+                        <!-- Loading Spinner (Hidden by default) -->
+                        <i class="ph-fill ph-spinner absolute left-1/2 -translate-x-1/2 hidden spinner loading-spinner text-xl"></i>
+                    </span>
+                </button>
+                <div id="errorMessage" class="hidden">
+                    <div class="glass-morphism bg-red-500 bg-opacity-10 mt-4 py-2 px-4 rounded-lg">
+                        <div class="flex items-center justify-center gap-2 text-red-500 text-xs sm:text-sm">
+                            <i class="ph-fill ph-warning-circle"></i>
+                            <span>Invalid email or password</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Database Status -->
+            <div id="dbStatus" class="mt-4 sm:mt-6 text-center flex items-center justify-center space-x-2">
+                <span class="text-xs sm:text-sm text-gray-400 flex items-center gap-2">
+                    <i class="ph-fill ph-database text-accent-pink"></i>
+                    Database Status:
+                </span>
+                <span id="dbStatusDot" class="w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 shadow-lg"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="hidden min-h-screen bg-gradient-to-br from-dark-primary via-dark-secondary to-dark-accent" id="dashboard">
+        <!-- Header -->
+        <header class="fixed top-0 left-0 right-0 bg-dark-primary bg-opacity-90 backdrop-blur-lg border-b border-glass z-50">
+            <div class="container mx-auto px-4 py-3">
+                <div class="flex justify-between items-center">
+                    <h1 class="text-2xl font-bold flex items-center gap-2">
+                        <i class="ph-fill ph-squares-four text-accent-blue"></i>
+                        Design Desk
+                    </h1>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right flex items-center gap-3">
+                            <i class="ph-fill ph-user-circle text-accent-purple text-2xl"></i>
+                            <div>
+                                <div class="font-semibold" id="userName">User</div>
+                                <div class="text-sm opacity-75" id="userRole">Role</div>
+                            </div>
+                        </div>
+                        <button id="logoutButton" class="glass-button flex items-center gap-2 hover:text-red-500">
+                            <i class="ph-fill ph-sign-out"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="fixed top-[60px] left-0 right-0 bg-dark-primary bg-opacity-90 backdrop-blur-lg border-b border-glass z-40">
+            <div class="container mx-auto px-4">
+                <div class="flex justify-between items-center py-2">
+                    <ul class="flex space-x-4">
+                        <li><a href="#" class="nav-item active flex items-center gap-2" data-view="dashboard">
+                            <i class="ph-fill ph-chart-pie"></i>Dashboard
+                        </a></li>
+                        <li><a href="#" class="nav-item flex items-center gap-2" data-view="projects">
+                            <i class="ph-fill ph-list-checks"></i>Project List
+                        </a></li>
+                        <li data-requires-permission="view_team_members">
+                            <a href="#" class="nav-item flex items-center gap-2" data-view="team-members">
+                                <i class="ph-fill ph-users"></i>Team Members
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- Search Bar -->
+                    <div class="relative">
+                        <input type="text" 
+                               id="searchInput" 
+                               placeholder="Search projects..." 
+                               class="glass-input w-80 pl-10 pr-4 py-2 text-sm"
+                        >
+                        <i class="ph-fill ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 pt-36">
+            <!-- Statistics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 stats-grid">
+                <div class="stat-card">
+                    <i class="ph-fill ph-folder-open text-2xl text-accent-blue mb-2"></i>
+                    <div class="text-3xl font-bold text-accent-blue" id="totalProjects">0</div>
+                    <div class="text-sm opacity-75">Your Projects</div>
+                </div>
+                <div class="stat-card">
+                    <i class="ph-fill ph-money text-2xl text-accent-purple mb-2"></i>
+                    <div class="text-3xl font-bold text-accent-purple" id="fixedProjects">0</div>
+                    <div class="text-sm opacity-75">Fixed Cost Projects</div>
+                </div>
+                <div class="stat-card">
+                    <i class="ph-fill ph-clock text-2xl text-accent-pink mb-2"></i>
+                    <div class="text-3xl font-bold text-accent-pink" id="dedicatedProjects">0</div>
+                    <div class="text-sm opacity-75">Dedicated Projects</div>
+                </div>
+                <div class="stat-card" data-requires-permission="view_all_stats">
+                    <i class="ph-fill ph-users-three text-2xl text-accent-blue mb-2"></i>
+                    <div class="text-3xl font-bold text-accent-blue" id="teamAvailability">0/0</div>
+                    <div class="text-sm opacity-75">Available Team Members</div>
+                </div>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="projectsGrid">
+                <!-- Project cards will be dynamically added here -->
+            </div>
+
+            <!-- No Results Message -->
+            <div id="noResults" class="hidden text-center py-12">
+                <i class="ph-fill ph-magnifying-glass-minus text-6xl text-gray-600 mb-4"></i>
+                <p class="text-xl text-gray-400">No projects found matching your search.</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="scripts/renderer.js"></script>
+</body>
+</html> 
